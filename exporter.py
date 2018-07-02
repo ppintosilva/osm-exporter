@@ -10,27 +10,17 @@ from string import Template
 #
 
 @click.command()
-@click.option(
-    '--template',
+@click.argument(
+    'template',
     required = True,
     nargs = 1,
-    type = click.File(mode = 'r'),
-    help = "File with overpass query template"
+    type = click.File(mode = 'r')
+    #help = "File with overpass query template"
 )
-@click.option(
-    '--values',
-    type = click.File(mode = 'r'),
-    help = "File with overpass query substitution values"
-)
-@click.option(
-    '--defaults',
-    type = click.File(mode = 'r'),
-    help = "File with default values for overpass query template"
-)
-@click.option(
-    '--bbox',
-    type = click.STRING,
-    help = "OSM bounding box string"
+@click.argument(
+    'values',
+    type = click.File(mode = 'r')
+    #help = "File with overpass query substitution values"
 )
 @click.option(
     '-o',
@@ -47,25 +37,16 @@ from string import Template
 )
 def export(template,
            values,
-           defaults,
-           bbox,
            out,
            verbose):
+    """
+    Export OSM data using overpass query templates.
 
-    # Unfortunate sequence of if/else statements
-    if defaults and values:
-        values_dict = yaml.safe_load(defaults)
-        values_dict.update(yaml.safe_load(values))
-    elif values:
-        values_dict = yaml.safe_load(values)
-    elif defaults:
-        values_dict = yaml.safe_load(defaults)
-    else:
-        print("Substition values for query template required: use the defaults, set your own values or both.")
-        return
+        TEMPLATE is a file containing a template string with '$'-based substitution. Defines the overpass query and substitution keys.
 
-    if bbox:
-        values_dict["bbox"] = bbox
+        VALUES is an yaml-file defining the values for each substition key.
+    """
+    values_dict = yaml.safe_load(values)
 
     query = Template(template.read())
     query = query.substitute(values_dict)
