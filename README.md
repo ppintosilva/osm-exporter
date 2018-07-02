@@ -22,7 +22,7 @@ Usage: exporter.py [OPTIONS] TEMPLATE VALUES
       TEMPLATE is a file containing a template string with '$'-based
       substitution. Defines the overpass query and substitution keys.
 
-      VALUES is an yaml-file defining the values for each substition key.
+      VALUES is an yaml-file defining the values for each substitution key.
 
 Options:
   -o, --out TEXT  Output filename with the exported osm data
@@ -32,7 +32,7 @@ Options:
 
 ### Example - Downloading OSM data for the [roads template](templates/roads)
 
-My use case consisted of using OSM data to build the road graph for a region of the U.K. In addition to roads, I wanted to include the location of traffic signals and bus stops. After developing and testing my overpass query on [overpass turbo](https://overpass-turbo.eu/), I came up with the following template (`templates/roads/query`):
+My use case consisted of using OSM data to build the road graph for a region of the U.K. In addition to roads, I wanted to include the location of traffic signals and bus stops. After developing and testing my overpass query on [overpass turbo](https://overpass-turbo.eu/), I came up with the following [query template](templates/roads/query):
 
 ```
 [bbox:$bbox]
@@ -56,7 +56,7 @@ out skel qt;
 ```
 
 The default substitution values are defined on the corresponding [defaults file](templates/roads/defaults.yml):
-```
+``` yaml
 bbox: "54.84,-1.86,55.18,-1.32"
 timeout: 120
 outformat: json
