@@ -10,62 +10,78 @@ from string import Template
 #
 
 @click.command()
-@click.argument(
-    'query-values',
-    required = False,
+@click.option(
+    '--template',
+    required = True,
     nargs = 1,
-    type = click.File(mode = 'r')
+    type = click.File(mode = 'r'),
+    help = "File with overpass query template"
+)
+@click.option(
+    '--values',
+    type = click.File(mode = 'r'),
+    help = "File with overpass query substitution values"
+)
+@click.option(
+    '--defaults',
+    type = click.File(mode = 'r'),
+    help = "File with default values for overpass query template"
+)
+@click.option(
+    '--bbox',
+    type = click.STRING,
+    help = "OSM bounding box string"
 )
 @click.option(
     '-o',
-    '--out_filename',
+    '--out',
     type = click.STRING,
     default = "map.osm",
-    help = "Output filename containing osm data"
+    help = "Output filename with the exported osm data"
 )
 @click.option(
     '-v',
     '--verbose',
     is_flag = True,
-    help = "Print query"
+    help = "Print the overpass query request"
 )
-def export(query_values, out_filename, verbose):
+def export(template,
+           values,
+           defaults,
+           bbox,
+           out,
+           verbose):
 
-    # Load defaults
-    try:
-        defaults_file = open("query.defaults.yml", "r")
-    except IOError:
-        print("Can't open the file 'query.defaults.yml'. Have you deleted or moved this file?")
-        return
-    # Get defaults into dictionary
-    values_dict = yaml.safe_load(defaults_file)
-
-    if query_values:
-        # Get dictionary from yml file with values necessary for query
-        user_vars_dict = yaml.safe_load(query_values)
-        values_dict.update(user_vars_dict)
-
-    # Load template file
-    try:
-        query = open("overpass.query.template", "r")
-    except IOError:
-        print("Can't open the file 'overpass.query.template'. Have you deleted or moved this file?")
+    # Unfortunate sequence of if/else statements
+    if defaults and values:
+        values_dict = yaml.safe_load(defaults)
+        values_dict.update(yaml.safe_load(values))
+    elif values:
+        values_dict = yaml.safe_load(values)
+    elif defaults:
+        values_dict = yaml.safe_load(defaults)
+    else:
+        print("Substition values for query template required: use the defaults, set your own values or both.")
         return
 
-    query = Template(query.read())
+    if bbox:
+        values_dict["bbox"] = bbox
+
+    query = Template(template.read())
     query = query.substitute(values_dict)
 
-    # if verbose:
-    #     print query
-
+    # Query time
     url = "http://overpass-api.de/api/interpreter?data=" + query
 
     if verbose:
         print url
+        print "\n"
 
-    download_file(url, out_filename)
+    print("\nDownloading OSM data to file '{}'\n...".format(out))
 
-    print("OSM data downloaded and saved to file {}".format(out_filename))
+    download_file(url, out)
+
+    print("OK")
 
     return # the end
 
