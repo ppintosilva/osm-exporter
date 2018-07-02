@@ -1,0 +1,25 @@
+## Tyne and Wear Region - UK - you can overwrite this in CLI or on your own values file
+bbox: "54.84,-1.86,55.18,-1.32"
+
+timeout: 120
+outformat: json
+
+node_filters: |-
+  // These lines need to be indented like this in this file only
+      ["highway"~"traffic_signals|bus_stop"]
+
+# Weird indentation scheme but
+way_filters: |-
+  // These lines need to be indented like this in this file only
+      ["highway"!="track"]
+      ["highway"!="bus_guideway"]
+      ["highway"!="escape"]
+      ["highway"!="raceway"]
+      ["highway"!="road"]
+      ["highway"!="pedestrian"]
+      ["highway"!="footway"]
+      ["highway"!="bridleway"]
+      ["highway"!="steps"]
+      ["highway"!="path"]
+      ["highway"!="cycleway"]
+      ["highway"!="construction"]

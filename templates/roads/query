@@ -1,0 +1,18 @@
+[bbox:$bbox]
+[timeout:$timeout]
+[out:$outformat]
+;
+(
+  node
+    ["highway"]
+    $node_filters
+    ;
+
+  way
+    ["highway"]
+    $way_filters
+    ;
+);
+out;
+>;
+out skel qt;
