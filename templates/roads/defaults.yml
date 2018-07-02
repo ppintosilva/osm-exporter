@@ -1,5 +1,6 @@
-# Headers
-bbox: "54.84,-1.86,55.18,-1.32" # Tyne and Wear Region - UK
+## Tyne and Wear Region - UK - you can overwrite this in CLI or on your own values file
+bbox: "54.84,-1.86,55.18,-1.32"
+
 timeout: 120
 outformat: json
 
